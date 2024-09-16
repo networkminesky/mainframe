@@ -1,0 +1,22 @@
+# spigot plugin.yml
+name: mainframe
+main: net.minesky.spigot.SpigotMain
+version: 1.2.0-BETA
+load: STARTUP
+commands:
+  mainframe:
+    aliases:
+      - "mf"
+loadbefore:
+  - "MineSkyCore"
+  - "MineSkyCrates"
+  - "MineSkyCustom"
+  - "MineSkyDiscord"
+  - "MineSkyFurnitures"
+  - "PlugManX"
+  - "PlugMan"
+  - "MineSkyProfile"
+  - "MineSkyTerrenos"
+  - "MineSkyPlayerShops"
+  - "MineSkyInteractions"
+  - "MineSkyGravestones"
