@@ -9,6 +9,7 @@ import net.minesky.core.CoreMain;
 import net.minesky.core.databridge.MineSkyDB;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import java.util.concurrent.Executors;
 public class MessagingObserver {
 
     private List<MessagingListener> listeners;
+
     private final MongoCollection collection;
     private final ExecutorService executorService;
 
@@ -51,10 +53,11 @@ public class MessagingObserver {
                                 continue;
 
                             if (updatedDocument.containsKey("channel")) {
-                                String key = updatedDocument.getString("channel");
+                                String channel = updatedDocument.getString("channel");
+                                String subchannel = updatedDocument.getString("subchannel");
                                 String value = updatedDocument.getString("value");
 
-                                notifyListeners(key, value);
+                                notifyListeners(channel, subchannel, value);
 
                                 collection.deleteOne(new Document("_id", updatedDocument.getObjectId("_id")));
                             }
@@ -74,9 +77,10 @@ public class MessagingObserver {
         });
     }
 
-    private void notifyListeners(String channel, String message) {
+    private void notifyListeners(String channel, String subchannel, String message) {
         for (MessagingListener listener : listeners) {
-            listener.onDocumentUpdated(channel, message);
+            if(listener.canListenToOtherChannels() || channel.equals(listener.getChannel()))
+                listener.onMessage(subchannel, message);
         }
     }
 

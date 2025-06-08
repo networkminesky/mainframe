@@ -75,11 +75,9 @@ public class PlayerDatabase {
                     return;
                 }
 
-                // Quebra a chave aninhada em partes usando a notação de ponto
                 String[] keyParts = key.split("\\.");
                 Object value = document;
 
-                // Percorre cada parte da chave para acessar o campo aninhado
                 for (String part : keyParts) {
                     if (value instanceof Document) {
                         value = ((Document) value).get(part);

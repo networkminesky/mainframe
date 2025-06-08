@@ -6,18 +6,21 @@ import org.bson.Document;
 
 public class MessagingSender {
 
-    public static void sendMessage(String channel, String value) {
+    public static void sendMessage(String channel, String subchannel, String value) {
         Document document = new Document()
                 .append("channel", channel)
+                .append("subchannel", subchannel)
                 .append("value", value);
 
-        // Insere o documento no MongoDB
         MongoCollection<Document> collection = MineSkyDB.getMongoClient().getDatabase("minesky").getCollection("messaging");
 
         collection.insertOne(document);
 
         collection.deleteOne(document);
+    }
 
+    public static void sendMessage(String subchannel, String value) {
+        sendMessage("mainframe:default", subchannel, value);
     }
 
 }

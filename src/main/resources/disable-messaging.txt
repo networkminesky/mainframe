@@ -1,0 +1,1 @@
+If this is file is present inside the plugin directory, Mainframe will not initialize the messaging module.

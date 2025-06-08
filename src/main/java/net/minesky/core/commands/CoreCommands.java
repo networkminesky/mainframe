@@ -21,6 +21,8 @@ public class CoreCommands {
     public static final List<String> subcommands = Arrays.asList("isconnected", "forcefirstconnect", "getplayervalue",
             "setplayervaluewithcallback", "playerexists", "debug-messaging");
 
+    public static final List<String> controlsubcommands = Arrays.asList("restart-servers", "console-command");
+
     public static void runCommand(Sender s, String[] args) {
         if(!s.hasPermission("mainframe.admin")) {
             s.sendMessage("&cYou don't have permission to do that.");
@@ -33,11 +35,32 @@ public class CoreCommands {
                     "&c/mainframe getplayervalue &f(player) (key)\n" +
                     "&c/mainframe setplayervaluewithcallback &f(player) (key) (value)\n" +
                     "&c/mainframe playerexists &f(player)\n" +
+                    "&c/mainframe control &f(player)\n" +
+                    "&c/mainframe servers\n" +
                     "&c/mainframe debug-messaging");
             return;
         }
 
-        if(args[0].equalsIgnoreCase("testspeed")) {
+        final String subcmd = args[0].toLowerCase();
+
+        if(subcmd.equals("control")) {
+
+            if(args.length == 1) {
+                s.sendMessage("Usage: /mainframe control (action)");
+                return;
+            }
+
+            MessagingSender.sendMessage("mainframe:list-servers", "asking-list");
+
+        }
+
+        if(subcmd.equals("servers")) {
+
+            MessagingSender.sendMessage("mainframe:list-servers", "asking-list");
+            
+        }
+
+        if(subcmd.equals("testspeed")) {
             if(CoreMain.currentPlatform != CoreMain.PlatformType.VELOCITY) {
                 s.sendMessage("You can only run this command on Velocity!");
                 return;
@@ -56,20 +79,22 @@ public class CoreCommands {
 
             SpeedTest.sendVelocityMessage(args[1]);
 
+            
+
             s.sendMessage("§eTest sent. The results will be shown at this server's console and in here!");
 
         }
 
-        if(args[0].equalsIgnoreCase("isconnected")) {
-            s.sendMessage(MineSkyDB.isConnected ? "Connected and operating!" : "Disconnected. Force first connection with /mainframe forcefirstconnect");
+        if(subcmd.equals("isconnected")) {
+            s.sendMessage(MineSkyDB.isConnected ? "§aConnected and operating!" : "§cDisconnected. §fForce first connection with /mainframe forcefirstconnect");
         }
 
-        if(args[0].equalsIgnoreCase("forcefirstconnect")) {
+        if(subcmd.equals("forcefirstconnect")) {
             s.sendMessage("Forcing first connection method and trying to reconnect to the Database...");
             MineSkyDB.firstConnect();
         }
 
-        if(args[0].equalsIgnoreCase("playerexists")) {
+        if(subcmd.equals("playerexists")) {
             PlayerDatabase.getPlayerDataAsync(args[1], new FindOneCallback() {
                 @Override
                 public void onQueryError(ErrorType type) {
@@ -83,7 +108,7 @@ public class CoreCommands {
             });
         }
 
-        if(args[0].equalsIgnoreCase("getplayervalue")) {
+        if(subcmd.equals("getplayervalue")) {
             PlayerDatabase.getPlayerSpecificDataAsync(args[1], ValueType.OBJECT, args[2], new FindValueCallback() {
                 @Override
                 public void onQueryDone(Document player, Object value, boolean found) {
@@ -100,7 +125,7 @@ public class CoreCommands {
             });
         }
 
-        if(args[0].equalsIgnoreCase("setplayervaluewithcallback")) {
+        if(subcmd.equals("setplayervaluewithcallback")) {
             PlayerDatabase.setPlayerData(args[1], new UpdatedData(args[2], args[3]), new SetOneCallback() {
                 @Override
                 public void onSetDone() {
@@ -114,7 +139,7 @@ public class CoreCommands {
             });
         }
 
-        if(args[0].equalsIgnoreCase("debug-messaging")) {
+        if(subcmd.equals("debug-messaging")) {
 
             s.sendMessage("Sending custom message listener to debug.");
 
