@@ -85,8 +85,7 @@ public class APIUtils {
     }
 
     public static boolean isBedrockUser(UUID u) {
-        return false;
-        //return FloodgateApi.getInstance().isFloodgatePlayer(u);
+        return FloodgateApi.getInstance().isFloodgatePlayer(u);
     }
 
     private static String createHex(String hexString) {
