@@ -19,7 +19,7 @@ import net.minesky.velocity.events.Events;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-@Plugin(id = "mainframe", name = "Mainframe Plugin - Velocity", version = "1.2.0-BETA",
+@Plugin(id = "mainframe", name = "Mainframe Plugin - Velocity", version = "1.3.1-BETA",
         url = "https://minesky.com.br", authors = {"Drawn"})
 public class VelocityMain {
 

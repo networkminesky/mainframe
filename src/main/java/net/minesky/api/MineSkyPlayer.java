@@ -43,7 +43,7 @@ public class MineSkyPlayer {
     }
 
     public boolean isBedrock() {
-        return this.isBedrock();
+        return this.bedrock;
     }
 
     public String getCachedMainClass() {
