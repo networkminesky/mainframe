@@ -33,36 +33,41 @@ public class TXTReader {
     private static File credentialsTXT;
 
     public static void saveDefaultCredentialsTXT(Class<?> classe) throws IOException {
-
-        InputStream r = classe.getResource("/credentials.txt").openStream();
-
         if(!CoreMain.pluginDirectory.exists()) {
             CoreMain.logger.info("Creating plugin directory folder...");
             CoreMain.pluginDirectory.mkdir();
         }
 
-        if(r != null) {
+        URL resource = classe.getResource("/credentials.txt");
+        if(resource == null) {
+            CoreMain.logger.info("No credentials.txt found, cancelling.");
+            return;
+        }
 
-            File file = new File(CoreMain.pluginDirectory, "credentials.txt");
+        InputStream r = resource.openStream();
+        if(r == null) {
+            CoreMain.logger.info("No stream for credentials.txt found, cancelling.");
+            return;
+        }
 
-            // Use um FileOutputStream para escrever os dados do InputStream no arquivo
-            try (FileOutputStream outputStream = new FileOutputStream(file)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = r.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
+        File file = new File(CoreMain.pluginDirectory, "credentials.txt");
+
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = r.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                r.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            } finally {
-                try {
-                    r.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
             }
-
-            credentialsTXT = file;
         }
+
+        credentialsTXT = file;
     }
 }
