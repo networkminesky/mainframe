@@ -68,7 +68,9 @@ public class CoreMain {
 
     public static void onDisable() {
         logger.info("Disabling plugin, shutting down MongoDB connections & observers...");
-        Messaging.getMessagingObserver().disconnect();
+        if(Messaging.getMessagingObserver() != null) {
+            Messaging.getMessagingObserver().disconnect();
+        }
 
         MineSkyDB.mongoClient.close();
     }
@@ -88,8 +90,9 @@ public class CoreMain {
         logger.info("[MongoDB-Messaging] Initialized... Plugins can now register new Listeners using the Messaging class.");
 
         logger.info("[MongoDB-Messaging] Initializing a new test listener on environment "+currentPlatform);
-
-        Messaging.getMessagingObserver().addListener("mainframe", new DefaultListener());
+        if(Messaging.getMessagingObserver() != null) {
+            Messaging.getMessagingObserver().addListener("mainframe", new DefaultListener());
+        }
     }
 
 }

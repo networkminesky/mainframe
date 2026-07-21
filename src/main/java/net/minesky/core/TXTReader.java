@@ -38,36 +38,17 @@ public class TXTReader {
             CoreMain.pluginDirectory.mkdir();
         }
 
-        URL resource = classe.getResource("/credentials.txt");
-        if(resource == null) {
-            CoreMain.logger.info("No credentials.txt found, cancelling.");
-            return;
-        }
-
-        InputStream r = resource.openStream();
-        if(r == null) {
-            CoreMain.logger.info("No stream for credentials.txt found, cancelling.");
-            return;
-        }
-
-        File file = new File(CoreMain.pluginDirectory, "credentials.txt");
-
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = r.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
+        File toFind = new File(CoreMain.pluginDirectory, "credentials.txt");
+        if(!toFind.exists()) {
+            CoreMain.logger.info("Creating default credentials.txt");
+            boolean created = toFind.createNewFile();
+            if (created) {
+                CoreMain.logger.info("Empty credentials.txt created successfully.");
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                r.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        } else {
+            CoreMain.logger.info("credentials found! Loading it in.");
         }
 
-        credentialsTXT = file;
+        credentialsTXT = toFind;
     }
 }
