@@ -4,6 +4,8 @@ main: net.minesky.spigot.SpigotMain
 version: 1.3.1-BETA
 load: STARTUP
 
+api-version: 26.1
+
 folia-supported: true
 
 commands:
