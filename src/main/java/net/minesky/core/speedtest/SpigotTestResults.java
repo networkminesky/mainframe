@@ -47,7 +47,6 @@ public class SpigotTestResults {
                 }
 
                 n++;
-
             }
         }.runTaskTimer(SpigotMain.getInstance(), 60, 20);
     }

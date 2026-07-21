@@ -3,8 +3,7 @@ package net.minesky.api;
 import net.minesky.api.mineskymod.MineSkyModHandler;
 import net.minesky.api.mineskymod.MineSkyModPlayer;
 import org.bukkit.entity.Player;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class MineSkyPlayer {
 
