@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+@Deprecated
 public class AdvancementManager {
 
     private static void awardCriteria(Player p, Advancement adv, String crit) {
