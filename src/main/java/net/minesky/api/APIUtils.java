@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 public class APIUtils {
 
     public static String textWithBackground(String s) {
-
         StringBuilder bd = new StringBuilder();
 
         for(char c : ChatColor.stripColor(s).toCharArray()) {

@@ -9,7 +9,9 @@ import net.minesky.core.databridge.callbacks.ErrorType;
 import net.minesky.core.databridge.callbacks.FindOneCallback;
 import net.minesky.core.databridge.callbacks.FindValueCallback;
 import net.minesky.core.databridge.callbacks.SetOneCallback;
+import net.minesky.spigot.SpigotMain;
 import org.bson.Document;
+import org.bukkit.Bukkit;
 
 import java.util.Collections;
 
@@ -20,45 +22,44 @@ public class PlayerDatabase {
     }
 
     public static void setPlayerData(String nameOrUUID, UpdatedData newData, final SetOneCallback callback) {
-        Document d = new Document();
-        for (String key : newData.getList().keySet()) {
-            Object value = newData.getList().get(key);
-            d.put(key, value);
-        }
+        Bukkit.getAsyncScheduler().runNow(SpigotMain.getInstance(), (task) -> {
+            Document d = new Document();
+            for (String key : newData.getList().keySet()) {
+                Object value = newData.getList().get(key);
+                d.put(key, value);
+            }
 
-        Document update = new Document("$set", d);
+            Document update = new Document("$set", d);
+            FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER);
 
-        FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER);
-
-        //MongoClient mongoClient = MineSkyDB.getMongoClient();
-
-        try {
-            String param = nameOrUUID;
-            String key;
-            if (param.length() <= 16 && param.length() >= 3) {
-                key = "latest-nickname";
-            } else {
-                if (param.length() != 36) {
-                    callback.onSetError(ErrorType.NOT_FORMATED_NAME);
-                    return;
+            try {
+                String param = nameOrUUID;
+                String key;
+                if (param.length() <= 16 && param.length() >= 3) {
+                    key = "latest-nickname";
+                } else {
+                    if (param.length() != 36) {
+                        callback.onSetError(ErrorType.NOT_FORMATED_NAME);
+                        return;
+                    }
+                    key = "uuid";
                 }
-                key = "uuid";
+                param = param.toLowerCase();
+
+                Document query = new Document(key, param);
+
+                Document updatedDocument = playersCollection().findOneAndUpdate(query, update, options);
+
+                if (updatedDocument != null) {
+                    callback.onSetDone();
+                } else {
+                    callback.onSetError(ErrorType.UNKNOWN_PLAYER);
+                }
+            } catch (MongoException ex) {
+                ex.printStackTrace();
+                callback.onSetError(ErrorType.DATABASE_ERROR);
             }
-            param = param.toLowerCase();
-
-            Document query = new Document(key, param);
-
-            Document updatedDocument = playersCollection().findOneAndUpdate(query, update, options);
-
-            if (updatedDocument != null) {
-                callback.onSetDone();
-            } else {
-                callback.onSetError(ErrorType.UNKNOWN_PLAYER);
-            }
-        } catch (MongoException ex) {
-            ex.printStackTrace();
-            callback.onSetError(ErrorType.DATABASE_ERROR);
-        }
+        });
     }
 
     public static void getPlayerSpecificDataAsync(String nameOrUUID, ValueType valueType, String key, final FindValueCallback callback) {
@@ -110,50 +111,51 @@ public class PlayerDatabase {
     }
 
     public static void getPlayerDataByNameAsync(String nickName, final FindOneCallback callback) {
-        try {
-            Document query = new Document("latest-nickname", nickName.toLowerCase());
+        Bukkit.getAsyncScheduler().runNow(SpigotMain.getInstance(), (task) -> {
+            try {
+                Document query = new Document("latest-nickname", nickName.toLowerCase());
 
-            final Document result = playersCollection().find(query).first();
+                final Document result = playersCollection().find(query).first();
 
-            if(result == null)
-                callback.onQueryError(ErrorType.UNKNOWN_PLAYER);
-            else
-                callback.onQueryDone(result);
+                if(result == null)
+                    callback.onQueryError(ErrorType.UNKNOWN_PLAYER);
+                else
+                    callback.onQueryDone(result);
 
-        } catch (MongoException ex) {
-            callback.onQueryError(ErrorType.DATABASE_ERROR);
-        }
+            } catch (MongoException ex) {
+                callback.onQueryError(ErrorType.DATABASE_ERROR);
+            }
+        });
     }
 
     public static void getPlayerDataAsync(String nameOrUUID, final FindOneCallback callback) {
-
-        String param = nameOrUUID;
-        String key = null;
-        if (param.length() <= 16 && param.length() >= 3) {
-            key = "latest-nickname";
-        } else {
-            //param = param.replaceAll("-", "");
-            if (param.length() != 36) {
-                return;
+        Bukkit.getAsyncScheduler().runNow(SpigotMain.getInstance(), (task) -> {
+            String param = nameOrUUID;
+            String key = null;
+            if (param.length() <= 16 && param.length() >= 3) {
+                key = "latest-nickname";
+            } else {
+                //param = param.replaceAll("-", "");
+                if (param.length() != 36) {
+                    return;
+                }
+                key = "uuid";
             }
-            key = "uuid";
-        }
-        param = param.toLowerCase();
+            param = param.toLowerCase();
 
-        Document query = new Document(key, param);
+            Document query = new Document(key, param);
 
-        try {
-            final Document result = playersCollection().find(query).first();
+            try {
+                final Document result = playersCollection().find(query).first();
 
-            if(result == null)
-                callback.onQueryError(ErrorType.UNKNOWN_PLAYER);
-            else
-                callback.onQueryDone(result);
+                if(result == null)
+                    callback.onQueryError(ErrorType.UNKNOWN_PLAYER);
+                else
+                    callback.onQueryDone(result);
 
-        } catch (MongoException ex) {
-            callback.onQueryDone(null);
-        }
-
+            } catch (MongoException ex) {
+                callback.onQueryDone(null);
+            }
+        });
     }
-
 }

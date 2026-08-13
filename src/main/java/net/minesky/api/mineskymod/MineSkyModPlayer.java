@@ -6,7 +6,7 @@ import net.minesky.spigot.SpigotMain;
 import net.minesky.api.MineSkyPlayer;
 
 public class MineSkyModPlayer {
-    public static final String LAST_MINESKYMOD_VERSION = "1.2.2";
+    public static final String LAST_MINESKYMOD_VERSION = "1.0.1";
 
     private final MineSkyPlayer msPlayer;
     private final String modVersion;

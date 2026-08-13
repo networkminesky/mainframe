@@ -23,5 +23,4 @@ public class UpdatedData {
     public HashMap<String, Object> getList() {
         return this.list;
     }
-
 }

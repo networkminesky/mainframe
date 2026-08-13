@@ -68,12 +68,11 @@ public class MineSkyDB {
     public static void firstConnect() {
         try (MongoClient mongoClient = MongoClients.create(getDefaultMongoClientSettings())) {
             try {
-
                 MongoDatabase database = mongoClient.getDatabase("minesky");
                 database.runCommand(new Document("ping", 1));
                 CoreMain.logger.info("[MongoDB] Conectado com sucesso a Database!");
-                isConnected = true;
 
+                isConnected = true;
             } catch (MongoException e) {
                 e.printStackTrace();
                 for(int i = 0; i < 10; i++) {
