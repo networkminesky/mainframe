@@ -1,94 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <build>
-        <finalName>${project.name}-universal-${project.version}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
-                <configuration>
-                    <createDependencyReducedPom>true</createDependencyReducedPom>
-                    <artifactSet>
-                        <includes>
-                            <include>org.mongodb:mongodb-driver-sync</include>
-                            <include>org.mongodb:mongodb-driver-core</include>
-                            <include>org.mongodb:mongo-java-driver</include>
-                            <include>org.mongodb:bson</include>
-                        </includes>
-                    </artifactSet>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <groupId>net.minesky</groupId>
-    <artifactId>mainframe</artifactId>
-    <version>1.4.0-BETA</version>
+    <artifactId>mainframe-parent</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-    <name>mainframe</name>
-    <description>Essential plugin for handling multiserver connections.</description>
+    <name>mainframe-parent</name>
+    <description>MineSky multiserver mainframe — parent project</description>
     <url>https://github.com/networkminesky/mainframe</url>
 
+    <modules>
+        <module>mainframe-api</module>
+        <module>mainframe-spigot</module>
+        <module>mainframe-velocity</module>
+    </modules>
+
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mainframe.version>${project.version}</mainframe.version>
+        <mongodb.version>5.1.1</mongodb.version>
+        <folia.api.version>26.1.2.build.8-stable</folia.api.version>
+        <velocity.api.version>3.3.0-SNAPSHOT</velocity.api.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>opencollab-snapshot</id>
-            <url>https://repo.opencollab.dev/main/</url>
-        </repository>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.minesky</groupId>
+                <artifactId>mainframe-api</artifactId>
+                <version>${mainframe.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>${mongodb.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-        <repository>
-            <id>papermc</id>
-            <url>https://repo.papermc.io/repository/maven-public/</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <!-- Folia API -->
-        <dependency>
-            <groupId>dev.folia</groupId>
-            <artifactId>folia-api</artifactId>
-            <version>26.1.2.build.8-stable</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.velocitypowered</groupId>
-            <artifactId>velocity-api</artifactId>
-            <version>3.3.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.10.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.geysermc.floodgate</groupId>
-            <artifactId>api</artifactId>
-            <version>2.2.2-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.13.0</version>
+                    <configuration>
+                        <release>${maven.compiler.release}</release>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

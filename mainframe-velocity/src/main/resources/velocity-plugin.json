@@ -1,0 +1,8 @@
+{
+  "id": "mainframe",
+  "name": "Mainframe",
+  "version": "2.0.0-SNAPSHOT",
+  "description": "MineSky multiserver core (Velocity)",
+  "authors": ["Drawn"],
+  "main": "net.minesky.velocity.VelocityMain"
+}
